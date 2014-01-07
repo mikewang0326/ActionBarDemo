@@ -2,6 +2,7 @@ package com.mike.actionbar.demo;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,9 +12,11 @@ import android.view.MenuItem;
 import android.widget.SearchView;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SecondActivity extends Activity{
 	
+    private Context mContext;
 	private ShareActionProvider mShareActionProvider;
 	
 	@Override
@@ -21,6 +24,7 @@ public class SecondActivity extends Activity{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_second);
+		mContext = this;
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
@@ -62,6 +66,7 @@ public class SecondActivity extends Activity{
 	    return intent;
 	}
 	
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		 switch (item.getItemId()) {
@@ -78,11 +83,11 @@ public class SecondActivity extends Activity{
 	
 
 	private void openSearch() {
-		Log.d("tt", "openSearch() ");
+		Toast.makeText(mContext, "openSearch()", Toast.LENGTH_SHORT).show();
 	}
 	
 	private void composeMessage() {
-		Log.d("tt", "composeMessage() ");
+		Toast.makeText(mContext, "composeMessage()", Toast.LENGTH_SHORT).show();
 	}
 	
 }
