@@ -1,6 +1,7 @@
 package com.mike.actionbar.demo;
 
 import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -12,8 +13,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 import android.widget.ShareActionProvider;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +24,7 @@ public class SecondActivity extends Activity {
 
 	private Context mContext;
 	private ShareActionProvider mShareActionProvider;
+	private ActionBar mActionBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,29 +32,76 @@ public class SecondActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_second);
 		mContext = this;
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
 		
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-	    actionBar.setDisplayShowTitleEnabled(false);
+		mActionBar = getActionBar();
+		mActionBar.setDisplayHomeAsUpEnabled(true);
+		
+		
+//		initActionBarTabs();
+		
+		initSpinnerList();
 
-		Tab tab = actionBar
+		// initFragmentTabs();
+	}
+
+
+	private void initSpinnerList() {
+		// init actionbar spinner list
+		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		SpinnerAdapter mSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.action_list,
+		          android.R.layout.simple_spinner_dropdown_item);
+		
+		mActionBar.setListNavigationCallbacks(mSpinnerAdapter, mNavigationCallback);
+	}
+	
+	
+	private OnNavigationListener mNavigationCallback  = new OnNavigationListener() {
+		
+		@Override
+		public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+			String[] strings = mContext.getResources().getStringArray(R.array.action_list);
+			Toast.makeText(mContext, strings[itemPosition], Toast.LENGTH_SHORT).show();
+			
+			// Create new fragment from our own Fragment class
+		    ListContentFragment newFragment = new ListContentFragment();
+		    FragmentTransaction ft = openFragmentTransaction();
+		    // Replace whatever is in the fragment container with this fragment
+		    //  and give the fragment a tag name equal to the string at the position selected
+		    ft.replace(R.id.fragment_container, newFragment, strings[itemPosition]);
+		    // Apply changes
+		    ft.commit();
+		    return true;
+		}
+	};
+	
+	private FragmentTransaction openFragmentTransaction () {
+		FragmentManager fragmentManager = getFragmentManager();
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		return fragmentTransaction;
+	}
+	
+	
+	
+	private void initActionBarTabs() {
+		// init actionbar tabs
+		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+	    mActionBar.setDisplayShowTitleEnabled(false);
+
+		Tab tab = mActionBar
 				.newTab()
 				.setText(R.string.artist)
 				.setTabListener(
 						new MyTabListener<ArtistFragment>(this, "artist",
 								ArtistFragment.class));
-		actionBar.addTab(tab);
+		mActionBar.addTab(tab);
 
-		tab = actionBar
+		tab = mActionBar
 				.newTab()
 				.setText(R.string.album)
 				.setTabListener(
 						new MyTabListener<AlbumFragment>(this, "album",
 								AlbumFragment.class));
-		actionBar.addTab(tab);
-
-		// initFragmentTabs();
+		mActionBar.addTab(tab);
 	}
 
 	private void initFragmentTabs() {

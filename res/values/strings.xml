@@ -10,4 +10,10 @@
     <string name="action_provider">action_provider</string>
     <string name="artist">artist</string>
     <string name="album">album</string>
+    
+    <string-array name="action_list">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+    </string-array>
 </resources>
